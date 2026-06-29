@@ -1,0 +1,21 @@
+#!/usr/bin/osascript -l JavaScript
+
+function validate(jsonString) {
+  // Use the Objective-C bridge to not fail on things like trailing commas
+  return ObjC.deepUnwrap(
+    $.NSJSONSerialization.JSONObjectWithDataOptionsError(
+      $(jsonString || "").dataUsingEncoding($.NSUTF8StringEncoding),
+      0, null))
+}
+
+function run(argv) {
+  ObjC.import("AppKit")
+
+  const input = argv[0]
+  const clipboard = $.NSPasteboard.generalPasteboard.stringForType($.NSPasteboardTypeString).js
+  const previous = $.NSProcessInfo.processInfo.environment.objectForKey("TryAlfredUI_previous_json").js
+
+  for (const text of [input, clipboard, previous]) {
+    if (validate(text)) return JSON.stringify({ update: { ids: { TryAlfredUI_writeArea: { text: text }}}})
+  }
+}

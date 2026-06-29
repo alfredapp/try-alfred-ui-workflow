@@ -1,0 +1,29 @@
+[
+  {
+    "triggers": "preload",
+    "action": [
+      {
+        "type": "script",
+        "src": "init-editor",
+        "args": "{var:TryAlfredUI_input}"
+      },
+      {
+        "type": "script",
+        "src": "settings-buttons",
+        "args": [ "setall", "{var:TryAlfredUI_live_render}", "{var:TryAlfredUI_container_constraint}" ]
+      }
+    ]
+  },
+  {
+    "triggers": "launched",
+    "action": {
+      "type": "script",
+      "src": "render",
+      "args": [ "{var:TryAlfredUI_live_render}", "0", "{var:TryAlfredUI_container_constraint}", "{value:TryAlfredUI_writeArea.text}" ]
+    }
+  },
+  {
+    "triggers": "quit",
+    "action": { "variables": { "TryAlfredUI_previous_json": "{value:TryAlfredUI_writeArea.text}" } }
+  }
+]

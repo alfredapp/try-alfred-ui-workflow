@@ -1,0 +1,72 @@
+#!/usr/bin/osascript -l JavaScript
+
+function run(argv) {
+  // Run options
+  const renderNow = argv[0] === "1"
+  const formatNow = argv[1] === "1"
+
+  // Exit early if not doing anything (e.g. stopped typing but automatic rendering is disabled)
+  if (!renderNow && !formatNow) return
+
+  // Render options
+  const renderConstraint = argv[2]
+  const rawInput = argv[3]
+
+  // Parse input
+  // Use the Objective-C bridge to not fail on things like trailing commas
+  // However, this does not preserve key order so it is not suitable for formatting
+  const inputObj = ObjC.deepUnwrap(
+    $.NSJSONSerialization.JSONObjectWithDataOptionsError(
+      $(rawInput).dataUsingEncoding($.NSUTF8StringEncoding),
+      0, null))
+
+  // Prepare output object
+  const outputObj = { update: { relayout: true, ids: {
+    TryAlfredUI_renderArea: {},
+    TryAlfredUI_writeArea: {}
+  }}}
+
+  const renderArea = outputObj.update.ids.TryAlfredUI_renderArea
+  const writeArea = outputObj.update.ids.TryAlfredUI_writeArea
+
+  // Exit on invalid input
+  if (!inputObj) {
+    renderArea["constraints"] = { position: "centre" }
+    renderArea["components"] = [{
+      type: "label",
+      text: "Invalid JSON",
+      colour: "systemRedColor"
+    }]
+
+    return JSON.stringify(outputObj)
+  }
+
+  // Format
+  if (formatNow) {
+    // The NSJSONSerialization approach mangles key order
+    // For formatting, use the stricter JSON.parse
+    try {
+      writeArea["text"] = JSON.stringify(JSON.parse(rawInput), null, 2)
+    } catch {
+      renderArea["constraints"] = { position: "centre" }
+      renderArea["components"] = [{
+        type: "label",
+        text: "Parsable but invalid JSON\nCheck for trailing commas",
+        colour: "systemYellowColor"
+      }]
+
+      return JSON.stringify(outputObj)
+    }
+  }
+
+  // Render
+  const topComponent = inputObj.window?.root || inputObj // Extract window.root if present
+
+  renderArea["constraints"] = renderConstraint === "auto" ?
+    { position: topComponent.type === "view" || !topComponent.type ? "fit" : "centre" } :
+    { position: renderConstraint }
+
+  renderArea["components"] = [topComponent]
+
+  return JSON.stringify(outputObj)
+}

@@ -1,0 +1,48 @@
+#!/usr/bin/osascript -l JavaScript
+
+function run(argv) {
+  const action = argv[0]
+  const items = argv.slice(1)
+  const highlightColour = "alfredSelectedResultBackgroundColor"
+
+  const uiObj = {
+    variables: {},
+    update: { ids: {
+      TryAlfredUI_liveRenderButton: {},
+      TryAlfredUI_autoConstraintButton: {},
+      TryAlfredUI_fitConstraintButton: {},
+      TryAlfredUI_centreConstraintButton: {}
+  }}}
+
+  const variables = uiObj.variables
+  const liveRender = uiObj.update.ids.TryAlfredUI_liveRenderButton
+  const constraints = {
+    auto: uiObj.update.ids.TryAlfredUI_autoConstraintButton,
+    fit: uiObj.update.ids.TryAlfredUI_fitConstraintButton,
+    centre: uiObj.update.ids.TryAlfredUI_centreConstraintButton
+  }
+
+  switch (action) {
+    case "setall":
+      if (items[0] === "1") liveRender["contenttintcolour"] = highlightColour
+      Object.keys(constraints).forEach(key => constraints[key]["contenttintcolour"] = null)
+      constraints[items[1]]["contenttintcolour"] = highlightColour
+
+      variables["TryAlfredUI_live_render"] = items[0] === "1"
+      variables["TryAlfredUI_container_constraint"] = items[1]
+      break
+    case "fliprender":
+      liveRender["contenttintcolour"] = items[0] === "1" ? null : highlightColour
+
+      variables["TryAlfredUI_live_render"] = items[0] === "0"
+      break
+    case "setconstraint":
+      Object.keys(constraints).forEach(key => constraints[key]["contenttintcolour"] = null)
+      constraints[items[0]].contenttintcolour = highlightColour
+
+      variables["TryAlfredUI_container_constraint"] = items[0]
+      break
+  }
+
+  return JSON.stringify(uiObj)
+}

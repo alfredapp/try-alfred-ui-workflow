@@ -1,0 +1,199 @@
+{
+  "bundleid": "com.alfredapp.vitor.tryalfredui",
+  "iconpath": "../icon.png",
+  "variablesconfig": {
+    "TryAlfredUI_input": { "src": "args[0]" },
+    "TryAlfredUI_container_constraint": { "default": "auto", "scriptenv": true, "persist": true },
+    "TryAlfredUI_live_render": { "default": true, "scriptenv": true, "persist": true },
+    "TryAlfredUI_previous_json": { "default": "", "scriptenv": true, "persist": true }
+  },
+  "window": {
+    "id": "TryAlfredUI_mainWindow",
+    "title": "Try Alfred UI",
+    "toolbar": { "type": "unifiedcompact" },
+    "frameautosave": true,
+    "size": { "width": 1200, "height": 800 },
+    "root": {
+      "shortcuts": [ { "shortcut": "⎋", "action": { "type": "function", "src": "TryAlfredUI_mainWindow", "args": "close" } } ],
+      "events": "{file:window_events.json}",
+      "type": "view",
+      "layout": "border",
+      "components": [
+        {
+          "constraints": { "region": "centre" },
+          "components": [{
+            "type": "view",
+            "layout": "grid",
+            "cols": 2,
+            "rows": 1,
+            "components": [
+              {
+                "id": "TryAlfredUI_writeArea",
+                "type": "textarea",
+                "focus": true,
+                "font": { "monospaced": true },
+                "textinsets": { "horizontal": 8, "vertical": 8 },
+                "disableallsubstitutions": true,
+                "events": [{
+                  "triggers": "typingstopped",
+                  "action": {
+                    "type": "script",
+                    "src": "render",
+                    "args": [ "{var:TryAlfredUI_live_render}", false, "{var:TryAlfredUI_container_constraint}", "{value:TryAlfredUI_writeArea.text}" ]
+                  }
+                }]
+              },
+              {
+                "constraints": { "position": "fit" },
+                "cliptobounds": true,
+                "id": "TryAlfredUI_renderArea",
+                "type": "view",
+                "layout": "stack"
+              }
+            ]
+          }]
+        },
+        {
+          "constraints": { "region": "bottom" },
+          "type": "view",
+          "layout": "border",
+          "padding": 8,
+          "components": [
+            {
+              "constraints": { "region": "left" },
+              "type": "view",
+              "layout": "inline",
+              "spacing": 8,
+              "components": [
+                {
+                  "type": "button",
+                  "text": "Format",
+                  "events": [{
+                    "triggers": "actioned",
+                    "action": {
+                      "type": "script",
+                      "src": "render",
+                      "args": [ false, true, "{var:TryAlfredUI_container_constraint}", "{value:TryAlfredUI_writeArea.text}" ]
+                    }
+                  }]
+                },
+                {
+                  "type": "button",
+                  "text": "Render",
+                  "events": [{
+                    "triggers": "actioned",
+                    "action": {
+                      "type": "script",
+                      "src": "render",
+                      "args": [ true, false, "{var:TryAlfredUI_container_constraint}", "{value:TryAlfredUI_writeArea.text}" ]
+                    }
+                  }]
+                }
+              ]
+            },
+            {
+              "constraints": { "region": "right", "position": "right" },
+              "type": "view",
+              "layout": "inline",
+              "components": [
+                {
+                  "constraints": { "insets": { "right": 16 } },
+                  "id": "TryAlfredUI_liveRenderButton",
+                  "type": "button",
+                  "bordered": false,
+                  "font": { "size": 18 },
+                  "image": { "type": "symbol", "src": "play.circle" },
+                  "tooltip": "Live rendering",
+                  "events": [{
+                    "triggers": "mousedown",
+                    "action": [
+                      {
+                        "type": "script",
+                        "src": "settings-buttons",
+                        "args": [ "fliprender", "{var:TryAlfredUI_live_render}" ]
+                      },
+                      {
+                        "type": "script",
+                        "src": "render",
+                        "args": [ true, false, "{var:TryAlfredUI_container_constraint}", "{value:TryAlfredUI_writeArea.text}" ]
+                      }
+                    ]
+                  }]
+                },
+                {
+                  "type": "button",
+                  "id": "TryAlfredUI_autoConstraintButton",
+                  "bordered": false,
+                  "font": { "size": 20 },
+                  "image": { "type": "symbol", "src": "inset.filled.leadinghalf.toptrailing.bottomtrailing.rectangle" },
+                  "tooltip": "Auto layout",
+                  "events": [{
+                    "triggers": "mousedown",
+                    "action": [
+                      {
+                        "type": "script",
+                        "src": "settings-buttons",
+                        "args": [ "setconstraint", "auto" ]
+                      },
+                      {
+                        "type": "script",
+                        "src": "render",
+                        "args": [ true, false, "{var:TryAlfredUI_container_constraint}", "{value:TryAlfredUI_writeArea.text}" ]
+                      }
+                    ]
+                  }]
+                },
+                {
+                  "type": "button",
+                  "id": "TryAlfredUI_fitConstraintButton",
+                  "bordered": false,
+                  "font": { "size": 20 },
+                  "image": { "type": "symbol", "src": "inset.filled.rectangle" },
+                  "tooltip": "Fit layout",
+                  "events": [{
+                    "triggers": "mousedown",
+                    "action": [
+                      {
+                        "type": "script",
+                        "src": "settings-buttons",
+                        "args": [ "setconstraint", "fit" ]
+                      },
+                      {
+                        "type": "script",
+                        "src": "render",
+                        "args": [ true, false, "{var:TryAlfredUI_container_constraint}", "{value:TryAlfredUI_writeArea.text}" ]
+                      }
+                    ]
+                  }]
+                },
+                {
+                  "type": "button",
+                  "id": "TryAlfredUI_centreConstraintButton",
+                  "bordered": false,
+                  "font": { "size": 20 },
+                  "image": { "type": "symbol", "src": "inset.filled.center.rectangle" },
+                  "tooltip": "Centre layout",
+                  "events": [{
+                    "triggers": "mousedown",
+                    "action": [
+                      {
+                        "type": "script",
+                        "src": "settings-buttons",
+                        "args": [ "setconstraint", "centre" ]
+                      },
+                      {
+                        "type": "script",
+                        "src": "render",
+                        "args": [ true, false, "{var:TryAlfredUI_container_constraint}", "{value:TryAlfredUI_writeArea.text}" ]
+                      }
+                    ]
+                  }]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
