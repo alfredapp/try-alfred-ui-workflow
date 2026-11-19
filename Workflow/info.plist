@@ -166,7 +166,7 @@ Alternatively, launch the UI prepopulated with any selected text or from the [Cl
 
 Configure the [Hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) for faster triggering.
 
-The editor is prepopulated with either your input, clipboard, or last editor session (in that order) if any of them parse as JSON.</string>
+The editor is prepopulated with either your input, clipboard, last editor session, or template (in that order) if any of them parse as JSON.</string>
 	<key>uidata</key>
 	<dict>
 		<key>3B8AD621-E8B8-48A3-BF09-371455B8FB38</key>
@@ -220,6 +220,32 @@ The editor is prepopulated with either your input, clipboard, or last editor ses
 			<string>textfield</string>
 			<key>variable</key>
 			<string>try_keyword</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>{
+  "constraints": { "position": "centre" },
+  "type": "label",
+  "text": "Edit the JSON to render",
+  "colour": "secondaryLabelColor"
+}</string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+				<key>verticalsize</key>
+				<integer>9</integer>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Default Template</string>
+			<key>type</key>
+			<string>textarea</string>
+			<key>variable</key>
+			<string>TryAlfredUI_init_template</string>
 		</dict>
 	</array>
 	<key>version</key>

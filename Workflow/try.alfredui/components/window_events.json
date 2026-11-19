@@ -4,12 +4,12 @@
     "action": [
       {
         "type": "script",
-        "src": "init-editor",
+        "src": "scripts/init-editor",
         "args": "{var:TryAlfredUI_input}"
       },
       {
         "type": "script",
-        "src": "settings-buttons",
+        "src": "scripts/settings-buttons",
         "args": [ "setall", "{var:TryAlfredUI_live_render}", "{var:TryAlfredUI_container_constraint}" ]
       }
     ]
@@ -18,7 +18,7 @@
     "triggers": "launched",
     "action": {
       "type": "script",
-      "src": "render",
+      "src": "scripts/render",
       "args": [ "{var:TryAlfredUI_live_render}", "0", "{var:TryAlfredUI_container_constraint}", "{value:TryAlfredUI_writeArea.text}" ]
     }
   },

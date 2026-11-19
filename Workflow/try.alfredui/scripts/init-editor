@@ -1,5 +1,13 @@
 #!/usr/bin/osascript -l JavaScript
 
+// Helpers
+function envVar(varName) {
+  return $.NSProcessInfo
+    .processInfo
+    .environment
+    .objectForKey(varName).js
+}
+
 function validate(jsonString) {
   // Use the Objective-C bridge to not fail on things like trailing commas
   return ObjC.deepUnwrap(
@@ -8,14 +16,17 @@ function validate(jsonString) {
       0, null))
 }
 
+// Main
 function run(argv) {
   ObjC.import("AppKit")
 
+  // Try to find valid JSON to populate
   const input = argv[0]
   const clipboard = $.NSPasteboard.generalPasteboard.stringForType($.NSPasteboardTypeString).js
-  const previous = $.NSProcessInfo.processInfo.environment.objectForKey("TryAlfredUI_previous_json").js
+  const previous = envVar("TryAlfredUI_previous_json")
+  const template = envVar("TryAlfredUI_init_template")
 
-  for (const text of [input, clipboard, previous]) {
+  for (const text of [input, clipboard, previous, template]) {
     if (validate(text)) return JSON.stringify({ update: { ids: { TryAlfredUI_writeArea: { text: text }}}})
   }
 }

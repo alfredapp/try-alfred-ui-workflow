@@ -29,6 +29,18 @@ function run(argv) {
   const renderArea = outputObj.update.ids.TryAlfredUI_renderArea
   const writeArea = outputObj.update.ids.TryAlfredUI_writeArea
 
+  // Exit on empty input
+  if (rawInput === "") {
+    renderArea["constraints"] = { position: "centre" }
+    renderArea["components"] = [{
+      type: "label",
+      text: "Type JSON into the text area",
+      colour: "secondaryLabelColor"
+    }]
+
+    return JSON.stringify(outputObj)
+  }
+
   // Exit on invalid input
   if (!inputObj) {
     renderArea["constraints"] = { position: "centre" }
