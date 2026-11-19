@@ -20,4 +20,4 @@ Alternatively, launch the UI prepopulated with any selected text or from the [Cl
 
 Configure the [Hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) for faster triggering.
 
-The editor is prepopulated with either your input, clipboard, or last editor session (in that order) if any of them parse as JSON.
+The editor is prepopulated with either your input, clipboard, last editor session, or template (in that order) if any of them parse as JSON.
